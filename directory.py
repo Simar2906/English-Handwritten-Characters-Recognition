@@ -1,5 +1,10 @@
 # %%
 """
+# Prepare Images in Directories for Classification
+"""
+
+# %%
+"""
 ## Importing the Libraries
 """
 
@@ -8,6 +13,7 @@ import numpy as np
 import pandas as pd
 import os
 import ipynb_py_convert
+import shutil
 
 # %%
 """
@@ -16,7 +22,7 @@ import ipynb_py_convert
 
 # %%
 dataset = pd.read_csv('english.csv')
-# we have path to iamge, category of image
+# we have path to image, category of image
 
 # %%
 dataset.head()
@@ -34,19 +40,17 @@ print(labels)
 """
 
 # %%
-#path = os.path.join(parent_dir, directory) 
+# Creating base directory for images
 os.makedirs("tmp", exist_ok=True)
 
 # %%
 classes_set = set(labels)
-#classes_set = sorted(classes_set)
-print(type(classes_set))
-
-# %%
 res = [char for char in classes_set if char.isupper()] 
 
 # %%
-print(res)
+"""
+### Replacing Capitals with Letter_c
+"""
 
 # %%
 capitals = []
@@ -55,17 +59,21 @@ for i in res:
     capitals.append(i)
 
 # %%
-print(capitals)
+y = [] 
+for i in labels:
+    if(i.isupper()):
+        i = i + '_c'
+    y.append(i)
 
 # %%
 classes_set = classes_set.difference(set(res))
-
-# %%
 classes_set = classes_set.union(set(capitals))
+classes_set = sorted(classes_set)
 
 # %%
-classes_set = sorted(classes_set)
-print(classes_set)
+"""
+## Creating Image Directories
+"""
 
 # %%
 parent_dir = 'tmp'
@@ -73,3 +81,17 @@ for i in classes_set:
     directory = i
     path = os.path.join(parent_dir, directory)
     os.makedirs(path, exist_ok=True)
+
+# %%
+"""
+## Moving images to new directory
+"""
+
+# %%
+destination = "tmp"
+source = "Img"
+
+# %%
+for i in range(0, len(paths)):
+    
+    shutil.copy(paths[i], destination + '/' + y[i])
